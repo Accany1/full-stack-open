@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Persons from './components/Persons'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
-import axios from 'axios'
+import numberService from './services/numbers'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -11,10 +11,10 @@ const App = () => {
   const [filtered, setFiltered] = useState('')
 
   const hook = () => {
-    axios
-      .get('http://localhost:3001/persons')
+    numberService
+      .getAll()
       .then(response => {
-        setPersons(response.data)
+        setPersons(response)
       })
   }
 
@@ -27,7 +27,21 @@ const App = () => {
     const allNumbers = persons.map(person => person.number)
 
     if (allNames.includes(newName) || allNumbers.includes(newNumber)) {
-      alert(`${newName} ${newNumber} is already added to phonebook`)
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
+        const id = (persons.find( n => n.name === newName)).id
+        
+        const newObject = {
+          name: newName,
+          number: newNumber,
+        }
+  
+        numberService
+          .replaceNum(id, newObject)
+          .then(response => {
+            setPersons(persons.map(person => person.id !== response.id ? person: response)) 
+          })
+                
+      }
     }
 
     else {
@@ -35,8 +49,22 @@ const App = () => {
         name: newName,
         number: newNumber,
       }
-      setPersons(persons.concat(newObject))
+
+      numberService
+        .create(newObject)
+        .then(response => {
+          setPersons(persons.concat(response))
+        })
     }
+  }
+
+  const deleteNumber = (id) => {
+    if (window.confirm(`Delete ${(persons.find( n => n.id === id)).name} ?`)) {
+      numberService
+        .delNum(id)
+      console.log ('deleted')
+      setPersons(persons.filter(person => person.id !== id))
+    } 
   }
   
   let filterToShow = persons
@@ -65,7 +93,7 @@ const App = () => {
       <PersonForm addAll={addAll} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange}/>
       <h2>Numbers</h2>
       <div>
-        <Persons filterToShow={filterToShow} /> 
+        <Persons filterToShow={filterToShow} deleteNumber={deleteNumber} /> 
       </div>
     </div>
   )
