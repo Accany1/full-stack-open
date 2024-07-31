@@ -1,7 +1,7 @@
 const Countries = ({showCountries}) => {
     return(
         <div>
-            {showCountries}
+            {showCountries} <button >show</button>
         </div>
     )
 }

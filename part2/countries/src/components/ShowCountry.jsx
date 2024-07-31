@@ -10,7 +10,6 @@ const ShowCountry = ({country}) => {
     const image = country.flags.png
 
     const LanguageList = ({language}) => {
-        console.log(language)
         return (
             <li>{language}</li>
         )
