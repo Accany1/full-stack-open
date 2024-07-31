@@ -64,6 +64,16 @@ const App = () => {
     }
   }
 
+  const CheckEmpty = ({country}) => {
+    if (country === null) {
+      return null
+    }
+
+    return(
+      <ShowCountry country={country}/>
+    )
+  }
+
   return (
     <>
         <div>
@@ -73,7 +83,7 @@ const App = () => {
           </form>
             {showList.map(country => <div key={country}><Countries showCountries={country} key={country+' '} /> <button onClick={() => ToggleFlag(country)} key={country}>show</button></div>)}
             {tooManyCountries}
-            <ShowCountry country={showSingular}/>
+            <CheckEmpty country={showSingular}/>
         </div>
     </>
   )
