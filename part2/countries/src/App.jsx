@@ -3,6 +3,8 @@ import axios from 'axios'
 import ShowCountry from './components/ShowCountry'
 
 
+const lat = 1.3521
+const long = 103.8198
 
 const App = () => {
   const [countryInput, setCountryInput] = useState('')
@@ -10,6 +12,7 @@ const App = () => {
   const [showList, setShowList] = useState([])
   const [tooManyCountries, setTooManyCountries] = useState('')
   const [showSingular, setShowSingular] = useState(null)
+
 
   useEffect(() => {
     axios
@@ -61,16 +64,6 @@ const App = () => {
     }
   }
 
-  const onSearch = (event) => {
-    setCountryInput(event.target.value)
-    event.preventDefault()
-    axios
-      .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${countryInput}`)
-      .then(response => {
-        console.log(response)
-      })
-  }
-
   return (
     <>
         <div>
@@ -82,7 +75,6 @@ const App = () => {
             {tooManyCountries}
             <ShowCountry country={showSingular}/>
         </div>
-        <div></div>
     </>
   )
 }
