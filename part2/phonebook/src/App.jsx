@@ -11,6 +11,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filtered, setFiltered] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
+  const [errorStyle, setErrorStyle] = useState()
 
   const hook = () => {
     numberService
@@ -21,6 +22,25 @@ const App = () => {
   }
 
   useEffect(hook,[])
+
+  const greenErrorStyle = {
+    color: 'green',
+    background: 'lightgray',
+    fontSize: '20',
+    borderStyle: 'solid',
+    borderRadius: '5',
+    padding: '10',
+    marginBottom: '10'}
+
+  const redErrorStyle = {
+    color: 'red',
+    background: 'lightgray',
+    fontSize: '20',
+    borderStyle: 'solid',
+    borderRadius: '5',
+    padding: '10',
+    marginBottom: '10'}
+  
 
   const addAll = (event) => {
     event.preventDefault()
@@ -60,9 +80,11 @@ const App = () => {
 
       setErrorMessage(`Added ${newName}`)
       console.log(errorMessage)
+      setErrorStyle(greenErrorStyle)
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
+      
     }
   }
 
@@ -70,8 +92,14 @@ const App = () => {
     if (window.confirm(`Delete ${(persons.find( n => n.id === id)).name} ?`)) {
       numberService
         .delNum(id)
-      console.log ('deleted')
-      setPersons(persons.filter(person => person.id !== id))
+        .then(setPersons(persons.filter(person => person.id !== id)))
+        .catch(error => {
+          setErrorMessage(`Information of ${(persons.find( n => n.id === id)).name} has already been removed from server`)
+          setErrorStyle(redErrorStyle)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
     } 
   }
   
@@ -96,7 +124,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification errorMessage={errorMessage} />
+      <Notification errorMessage={errorMessage} style={errorStyle}/>
       <Filter onChange={handleFilterChange}/>
       <h2>Add a new</h2>
       <PersonForm addAll={addAll} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange}/>
