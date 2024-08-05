@@ -78,10 +78,6 @@ app.delete('/api/persons/:id', (request, response) => {
     response.status(204).end()
 })
 
-const generateID = () => {
-        return String(Math.floor(Math.random()*100000))
-}
-
 app.post('/api/persons', (request, response) => {
     const body = request.body
 
@@ -89,23 +85,20 @@ app.post('/api/persons', (request, response) => {
         return response.status(400).json({
           error:'content missing'
         }) 
-    } else if (persons.find(person => person.name === body.name)) {
-        return response.status(400).json({
-            error:'name must be unique'
-        }) 
     }
 
-    const person = {
-        id:generateID(),
+    const person = new Number({
         name:body.name,
         number:body.number,
-    }
+    })
 
-    persons = persons.concat(person)
+    person.save().then(savedPerson => {
+        response.json(savedPerson)
+    })
 
-    response.json(person)
+    
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT)
 console.log(`Server running on port ${PORT}`)
