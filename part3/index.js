@@ -1,7 +1,11 @@
+require('dotenv').config()
+
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
 const cors = require('cors')
+
+const Number = require('./model/phoneNumber')
 
 morgan.token('result', (req,res) => {
     return (
@@ -38,18 +42,23 @@ let persons = [
 ]
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Number.find({}).then(number => {
+        response.json(number)
+    })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    const person = persons.find(person => person.id === id)
+    Number.findById(request.params.id).then(number => {
+        response.json(number)
+    })
+    // const id = request.params.id
+    // const person = persons.find(person => person.id === id)
 
-    if (person) {
-        response.json(person)
-    } else {
-        response.status(404).end()
-    }
+    // if (person) {
+    //     response.json(person)
+    // } else {
+    //     response.status(404).end()
+    // }
 })
 
 app.get('/info', (request, response) => {
