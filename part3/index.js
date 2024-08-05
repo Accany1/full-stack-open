@@ -66,13 +66,15 @@ app.get('/api/persons/:id', (request, response, next) => {
 })
 
 app.get('/info', (request, response) => {
-    return (
+    Number.find({}).then(number => {
+        // console.log(number.length)
         response.send(
-            `Phonebook has info for ${persons.length} people
+            `Phonebook has info for ${number.length} people
             <br/>
             ${new Date()}`
         )
-    )
+    })
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
