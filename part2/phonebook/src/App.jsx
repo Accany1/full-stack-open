@@ -62,11 +62,9 @@ const App = () => {
           .then(response => {
             setPersons(persons.map(person => person.id !== response.id ? person: response)) 
           })
-                
+  
       }
-    }
-
-    else {
+    } else if (newName.length < 4){
       const newObject = {
         name: newName,
         number: newNumber,
@@ -76,6 +74,29 @@ const App = () => {
         .create(newObject)
         .then(response => {
           setPersons(persons.concat(response))
+        })
+        .catch(error => {
+          setErrorMessage(error.response.data.error)
+        })
+        
+      setErrorStyle(redErrorStyle)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+
+    } else {
+      const newObject = {
+        name: newName,
+        number: newNumber,
+      }
+
+      numberService
+        .create(newObject)
+        .then(response => {
+          setPersons(persons.concat(response))
+        })
+        .catch(error => {
+          console.log(error.response.data.error)
         })
 
       setErrorMessage(`Added ${newName}`)
