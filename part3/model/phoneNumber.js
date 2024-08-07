@@ -14,16 +14,23 @@ mongoose.connect(url)
     console.log('error connecting to MongoDB:', error.message)
   })
 
+const validators = [
+  {validator: (v) => { return /\d{2}-\d{8}/.test(v)}},
+  {validator: (v) => { return /\d{3}-\d{7}/.test(v)}}
+]
+
 const numberSchema = new mongoose.Schema({
-name: {
-  type: String,
-  minLength: 3,
-  required: true
-},
-number: {
-  type: String,
-  required: true
-},
+  name: {
+    type: String,
+    minLength: 3,
+    required: true
+  },
+  number: {
+    type: String,
+    validate: validators,
+    minLength: 8,
+    required: true
+  },
 })
 
 numberSchema.set('toJSON', {

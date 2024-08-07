@@ -64,7 +64,7 @@ const App = () => {
           })
   
       }
-    } else if (newName.length < 4){
+    } else if (newName.length < 4 || newName != /\d{2}-\d{8}/ || newName != /\d{3}-\d{7}/){
       const newObject = {
         name: newName,
         number: newNumber,
@@ -78,7 +78,7 @@ const App = () => {
         .catch(error => {
           setErrorMessage(error.response.data.error)
         })
-        
+
       setErrorStyle(redErrorStyle)
       setTimeout(() => {
         setErrorMessage(null)
