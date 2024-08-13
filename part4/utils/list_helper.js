@@ -1,4 +1,8 @@
 const maxBy = require("lodash/maxBy");
+const groupBy = require("lodash/groupBy")
+const sumBy = require("lodash/sumBy")
+const orderBy = require("lodash/orderBy")
+const lodash = require("lodash")
 
 const dummy = (blogs) => {
     return 1
@@ -36,9 +40,32 @@ const mostBlogs = (blogs) => {
       }
 }
 
+const mostLikes = (blogs) => {
+    const reducedList = groupBy(blogs, 'author')
+
+    const likesByAuthor = lodash.map(reducedList, (blog,author) => 
+      ({
+      author, likes: lodash.sumBy(blog,'likes')
+    }))
+
+    const maxAuthor = maxBy(likesByAuthor, 'likes')
+
+    
+    // for (author in reducedList) {
+    //     const total = sumBy(reducedList[author], (author) => author.likes)
+    //     reducedList[author].author = author
+    //     reducedList[author].likes = total
+    // }
+
+    // const orderedList = orderBy(reducedList, ['likes,author'],['desc'])
+
+    return maxAuthor
+}
+
   module.exports = {
     totalLikes,
     dummy,
     favouriteBlog,
-    mostBlogs
+    mostBlogs,
+    mostLikes
   }
