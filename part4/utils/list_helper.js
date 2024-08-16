@@ -3,6 +3,7 @@ const groupBy = require("lodash/groupBy")
 const sumBy = require("lodash/sumBy")
 const orderBy = require("lodash/orderBy")
 const lodash = require("lodash")
+const Blog = require('../models/blog')
 
 const dummy = (blogs) => {
     return 1
@@ -114,11 +115,17 @@ const mostLikes = (blogs) => {
     return maxAuthor
 }
 
+const blogsInDb = async () => {
+  const blogs = await Blog.find({})
+  return blogs.map(blog => blog.toJSON())
+}
+
   module.exports = {
     totalLikes,
     dummy,
     favouriteBlog,
     mostBlogs,
     mostLikes,
-    initialBlogs
+    initialBlogs,
+    blogsInDb
   }

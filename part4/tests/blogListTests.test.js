@@ -36,6 +36,29 @@ test('identifier property is id', async () => {
   assert(contents.includes(listHelper.initialBlogs[0]._id))
 })
 
+test('a blog can be added', async () => {
+  const newBlog = {
+    title: "I am new blog",
+    author: "Edsger W. Dijkstra",
+    url: "http://www.u.arizona.edu/~rubinson/copyright_violations/BLOG.html",
+    likes: 20,
+    __v: 0
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await listHelper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, listHelper.initialBlogs.length +1)
+
+  const contents = blogsAtEnd.map(n => n.title)
+
+  assert(contents.includes('I am new blog'))
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
