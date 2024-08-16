@@ -110,6 +110,29 @@ test('deletes blog, succeeds with status code 204 if id is valid', async () => {
   assert(!contents.includes(blogToDelete.title))
 })
 
+test('update blog post', async () => {
+  const blogsAtStart = await listHelper.blogsInDb()
+  const blogToUpdate = blogsAtStart[0]
+
+  const newBlog = {
+    title: "React patterns",
+    author: "Michael Chan",
+    url: "https://reactpatterns.com/",
+    likes: 10,
+    id: "5a422a851b54a676234d17f7"
+  }
+
+  await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(newBlog)
+    .expect(200)
+
+  const blogsAtEnd = await listHelper.blogsInDb()
+
+  assert.strictEqual(blogsAtEnd[0].likes, newBlog.likes)
+})
+
+
 after(async () => {
   await mongoose.connection.close()
 })
