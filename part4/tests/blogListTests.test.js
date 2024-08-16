@@ -41,7 +41,6 @@ test('a blog can be added', async () => {
     title: "I am new blog",
     author: "Edsger W. Dijkstra",
     url: "http://www.u.arizona.edu/~rubinson/copyright_violations/BLOG.html",
-    likes: 20,
     __v: 0
   }
 
@@ -57,6 +56,23 @@ test('a blog can be added', async () => {
   const contents = blogsAtEnd.map(n => n.title)
 
   assert(contents.includes('I am new blog'))
+})
+
+test('if likes is missing, it is zero', async () => {
+  const newBlog = {
+    title: "I am new blog",
+    author: "Edsger W. Dijkstra",
+    url: "http://www.u.arizona.edu/~rubinson/copyright_violations/BLOG.html"
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await listHelper.blogsInDb()
+  assert.strictEqual(blogsAtEnd[(blogsAtEnd.length-1)].likes,0)
 })
 
 after(async () => {
