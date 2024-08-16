@@ -26,6 +26,16 @@ test('all blog posts are returned', async () => {
   assert.strictEqual(response.body.length, listHelper.initialBlogs.length)
 })
 
+test('identifier property is id', async () => {
+  const response = await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+  const contents = response.body.map(e => e.id)
+  assert(contents.includes(listHelper.initialBlogs[0]._id))
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
