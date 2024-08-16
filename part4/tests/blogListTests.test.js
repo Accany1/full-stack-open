@@ -9,8 +9,12 @@ const app = require('../app')
 const api = supertest(app)
 
 beforeEach(async () => {
-  await Blog.deleteMany({})
+  await Blog.deleteMany({}) 
 
+  // for(let blog of listHelper.initialBlogs){
+  //   let blogObject = new Blog(blog)
+  //   await blogObject.save()
+  // }
   //array of mongoose objects for each of the notes in the helper initial notes array
   const blogObjects = listHelper.initialBlogs
     .map(blog => new Blog(blog))
@@ -73,6 +77,21 @@ test('if likes is missing, it is zero', async () => {
 
   const blogsAtEnd = await listHelper.blogsInDb()
   assert.strictEqual(blogsAtEnd[(blogsAtEnd.length-1)].likes,0)
+})
+
+test('if title or url is missing, return 400', async () => {
+  const newBlog = {
+    author: "Edsger W. Dijkstra"
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+  const blogsAtEnd = await listHelper.blogsInDb()
+
+  assert.strictEqual(blogsAtEnd.length, listHelper.initialBlogs.length)
 })
 
 after(async () => {
