@@ -94,6 +94,22 @@ test('if title or url is missing, return 400', async () => {
   assert.strictEqual(blogsAtEnd.length, listHelper.initialBlogs.length)
 })
 
+test('deletes blog, succeeds with status code 204 if id is valid', async () => {
+  const blogsAtStart = await listHelper.blogsInDb()
+  const blogToDelete = blogsAtStart[0]
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+  const blogsAtEnd = await listHelper.blogsInDb()
+
+  assert.strictEqual(blogsAtEnd.length, listHelper.initialBlogs.length - 1)
+
+  const contents = blogsAtEnd.map(r => r.title)
+  assert(!contents.includes(blogToDelete.title))
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
